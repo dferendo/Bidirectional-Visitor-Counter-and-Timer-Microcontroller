@@ -32,5 +32,29 @@ The below figure shows how the several modules are interconnected together. Each
 
 1. Controller is used to operate the current Mode it is on. The Controller's main job is to use the provided drivers interface to do the current action it needs. The interrupts are also managed by the ISR module found in the Controller.
 
+The Main module is used to determine the initial starting mode taken from EEPROM. When the mode is read, the control is passed to the Controller. Whenever a switch interrupt is triggered, the Main re-takes control, switches the mode and gives control back to the Controller.
 
+![Image](images/SoftwareComponents.jpg "Software Components")
+
+### Interaction between Hardware and Software
+
+In this section interrupts and how the software handles the interrupts will be discussed.
+
+#### Interrupts
+
+There are 3 ways interrupts can occur in the system. These are:
+
+1. Switch interrupt can occur whenever someone presses the switch. This switch uses port 2 for interrupts. This interrupt will cause the mode to change by changing a global variable.
+
+1. A period is specified for the timer. An interrupt is caused by the timer whenever the timer is enabled and is not disabled for that specified period. This interrupt is used to check for failed arrival or departure. A separate ISR is used for timer interrupts.
+
+1. The IR Modules can cause an interrupt if they detect an object. The IR Modules uses port 0 for interrupts. The IR Modules interrupts control the flow of the program and will be discussed in more detail.
+
+![Image](images/StateDiagram.jpg "State Diagram for the IR Modules.")
+
+The above figure shows the state diagram used for the IR Modules interrupts. Depending on the initial interrupt of the IR Module, an arrival or departure is validated. When the system is in state 2 or 3, a timer is used. The timer will be active for a specified period and if the period is exceeded, an interrupt is triggered. The time-out is expected to be amended according to the application of the system, due to the size of the door and the density of people expected. The interrupt will cause the system to return to state 1 and indicate an error to the user. After servicing an interrupt, the actions depended on the current state is completed. If the system is on state 1,2 or 3 nothing is done and the system waits for more interrupts. The actions on state 4 and 5 depend on the current mode. Further details in the next Section. 
+
+It is important to mention that having the system function mainly on interrupts makes the system far quicker to react to external changes, as well as function more economically since for most of the time, the system is dormant.
+
+#### Software Actions Regarding Interrupts
 
