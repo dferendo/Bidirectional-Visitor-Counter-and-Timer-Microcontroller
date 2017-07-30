@@ -58,3 +58,15 @@ It is important to mention that having the system function mainly on interrupts 
 
 #### Software Actions Regarding Interrupts
 
+The figure below shows the flow of program for the Bidirection Visitor Counter. When Bidirectional visitor counter mode is selected, the counter is set to 0. The program will keep looping until the mode is changed. When the mode is changed, the system goes to Interview mode. For Bidirection Visitor Counter, State 4 indicates an arrival. When an arrival occurs, the counter is incremented and peripherals are activated to show an arrival. State 5 indicates a departure. When a departure occurs, the counter is checked if it is 0 or less. If so the user is notified with the error. Otherwise the counter is decremented and the peripherals are activated to show a departure. It is important to note to reset the current State to State 1 so more arrivals or departures can be handled. This is not done by the ISR but it is done by the code that does the actions for that current State (polling on the current state).
+
+![Image](images/BidirectionVisitorCounter.jpg "Bidirection Visitor Counter")
+
+The next figure shows the second mode of the system which is the Interview mode. When the system is on State 4, it indicates an arrival. When there is an arrival, the variable timer is on is checked to see if the room was already occupied. If so, the arrival is ignored and an error is shown to the user while continuing to show the timer for the other arrival. If the timer is on was not activated beforehand, the variable is switched to true. The peripherals are activated to show an arrival, the current State is reset to State 1 and the LCD Screen will be continuously updated until the system is on State 5. When the system is on State 5, it indicates a departure. The variable timer is on and is checked if it was activated. If it was not activated, an error is shown to the user and the departure is ignored. Otherwise, the variable is switched to false and the peripherals are activated to show a departure. Note that the LCD Screen will show the time spent in the room until there is another arrival. 
+
+![Image](images/SecondmodeTimer.jpg "Timer Mode")
+
+The following figure shows the starting of the system and how the 2 modes operate. When the system starts, the previous saved mode is loaded from the EEPROM. Depending on the read mode, the system enters the expected mode. If garbage data is found, the default mode is Bidirectional Visitor Counter (mode 1). When a mode is selected, the flowchart of said mode is ran. The mode will continue to run until there is an interrupt given from the switch causing that flowchart to stop and the flowchart shown in Figure \ref{fig:modeConnecting} regains control. The next mode is then executed by starting the said mode flowchart and repeating the process again. 
+
+![Image](images/ModeConnector.jpg "Connection of modes")
+
