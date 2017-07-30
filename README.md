@@ -70,3 +70,16 @@ The following figure shows the starting of the system and how the 2 modes operat
 
 ![Image](images/ModeConnector.jpg "Connection of modes")
 
+## Build 
+
+To build the system, Keil μ Vision IDE was used.
+
+## Setup
+
+A low res image (sorry) of the hardware.
+
+![Image](images/system.png "System")
+
+## License
+
+This project is licensed under MIT.
